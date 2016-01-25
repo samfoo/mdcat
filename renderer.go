@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/russross/blackfriday"
 	"github.com/samfoo/ansi"
+	"html"
 	"regexp"
 )
 
@@ -125,25 +126,12 @@ func (options *Console) Paragraph(out *bytes.Buffer, text func() bool) {
 	out.WriteString("\n\n")
 }
 
-func (options *Console) Table(out *bytes.Buffer, header []byte, body []byte, columnData []int) {
-	out.WriteString("Table\n")
-}
-
-func (options *Console) TableRow(out *bytes.Buffer, text []byte) {
-	out.WriteString("TableRow\n")
-}
-
-func (options *Console) TableHeaderCell(out *bytes.Buffer, text []byte, flags int) {
-	out.WriteString("TableHeadersCell\n")
-}
-
-func (options *Console) TableCell(out *bytes.Buffer, text []byte, flags int) {
-	out.WriteString("TableCell\n")
-}
-
-func (options *Console) Footnotes(out *bytes.Buffer, text func() bool) {}
-
-func (options *Console) FootnoteItem(out *bytes.Buffer, name, text []byte, flags int) {}
+func (options *Console) Table(out *bytes.Buffer, header []byte, body []byte, columnData []int) {}
+func (options *Console) TableRow(out *bytes.Buffer, text []byte)                               {}
+func (options *Console) TableHeaderCell(out *bytes.Buffer, text []byte, flags int)             {}
+func (options *Console) TableCell(out *bytes.Buffer, text []byte, flags int)                   {}
+func (options *Console) Footnotes(out *bytes.Buffer, text func() bool)                         {}
+func (options *Console) FootnoteItem(out *bytes.Buffer, name, text []byte, flags int)          {}
 
 func (options *Console) TitleBlock(out *bytes.Buffer, text []byte) {
 	out.WriteString("\n")
@@ -182,7 +170,7 @@ func (options *Console) Image(out *bytes.Buffer, link []byte, title []byte, alt 
 }
 
 func (options *Console) LineBreak(out *bytes.Buffer) {
-	out.WriteString("LineBreak\n")
+	out.WriteString("\n")
 }
 
 func (options *Console) Link(out *bytes.Buffer, link []byte, title []byte, content []byte) {
@@ -218,7 +206,7 @@ func (options *Console) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
 }
 
 func (options *Console) Entity(out *bytes.Buffer, entity []byte) {
-	out.WriteString("Entity\n")
+	out.WriteString(html.UnescapeString(string(entity)))
 }
 
 func (options *Console) NormalText(out *bytes.Buffer, text []byte) {
