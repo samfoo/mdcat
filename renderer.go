@@ -166,7 +166,7 @@ func (options *Console) Emphasis(out *bytes.Buffer, text []byte) {
 }
 
 func (options *Console) Image(out *bytes.Buffer, link []byte, title []byte, alt []byte) {
-	out.WriteString("\U0001F5BC")
+	out.WriteString(" [ image ] ")
 }
 
 func (options *Console) LineBreak(out *bytes.Buffer) {
