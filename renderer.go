@@ -105,11 +105,13 @@ func (options *Console) ListItem(out *bytes.Buffer, text []byte, flags int) {
 		out.WriteString(fmt.Sprintf("%d. ", current.index))
 		current.index += 1
 	} else {
-		out.WriteString("\u2022 ")
+		out.WriteString(ansi.ColorCode("red+bh"))
+		out.WriteString("* ")
+		out.WriteString(ansi.ColorCode("reset"))
 	}
 
 	out.Write(text)
-	out.WriteString("\n")
+	out.WriteString("\n\n")
 }
 
 func (options *Console) Paragraph(out *bytes.Buffer, text func() bool) {
@@ -222,6 +224,7 @@ func (options *Console) NormalText(out *bytes.Buffer, text []byte) {
 	reg, _ := regexp.Compile("\\s+")
 
 	out.WriteString(reg.ReplaceAllString(s, " "))
+	// out.Write(text)
 }
 
 func (options *Console) DocumentHeader(out *bytes.Buffer) {
