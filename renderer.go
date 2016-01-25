@@ -150,7 +150,11 @@ func (options *Console) FootnoteItem(out *bytes.Buffer, name, text []byte, flags
 }
 
 func (options *Console) TitleBlock(out *bytes.Buffer, text []byte) {
-	out.WriteString("TitleBlock\n")
+	out.WriteString("\n")
+	out.WriteString(headerStyles[0])
+	out.Write(text)
+	out.WriteString(ansi.ColorCode("reset"))
+	out.WriteString("\n\n")
 }
 
 func (options *Console) AutoLink(out *bytes.Buffer, link []byte, kind int) {
@@ -195,7 +199,9 @@ func (options *Console) Link(out *bytes.Buffer, link []byte, title []byte, conte
 }
 
 func (options *Console) RawHtmlTag(out *bytes.Buffer, tag []byte) {
-	out.WriteString("RawHtmlTag\n")
+	out.WriteString(ansi.ColorCode("magenta"))
+	out.Write(tag)
+	out.WriteString(ansi.ColorCode("reset"))
 }
 
 func (options *Console) TripleEmphasis(out *bytes.Buffer, text []byte) {
@@ -224,7 +230,6 @@ func (options *Console) NormalText(out *bytes.Buffer, text []byte) {
 	reg, _ := regexp.Compile("\\s+")
 
 	out.WriteString(reg.ReplaceAllString(s, " "))
-	// out.Write(text)
 }
 
 func (options *Console) DocumentHeader(out *bytes.Buffer) {
