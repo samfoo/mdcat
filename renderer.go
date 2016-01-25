@@ -7,6 +7,7 @@ import (
 	"github.com/samfoo/ansi"
 	"html"
 	"regexp"
+	"strings"
 )
 
 // Index corresponds to the heading level (e.g. h1, h2, h3...)
@@ -51,12 +52,12 @@ func (options *Console) BlockCode(out *bytes.Buffer, text []byte, lang string) {
 }
 
 func (options *Console) BlockQuote(out *bytes.Buffer, text []byte) {
-	s := string(text)
+	s := strings.TrimSpace(string(text))
 	reg, _ := regexp.Compile("\\n")
 
-	out.WriteString("\n    \n    | ")
-	out.WriteString(reg.ReplaceAllString(s, "\n    | "))
-	out.WriteString("\n")
+	out.WriteString("\n  | ")
+	out.WriteString(reg.ReplaceAllString(s, "\n  | "))
+	out.WriteString("\n\n")
 }
 
 func (options *Console) BlockHtml(out *bytes.Buffer, text []byte) {
