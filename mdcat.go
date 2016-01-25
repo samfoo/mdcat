@@ -26,14 +26,16 @@ func main() {
 		blackfriday.EXTENSION_DEFINITION_LISTS
 
 	if len(args) > 0 {
-		input, err := ioutil.ReadFile(args[0])
-		if err != nil {
-			os.Stderr.WriteString(fmt.Sprintf("mdcat: %s: unable to read from file\n", args[0]))
-			os.Exit(1)
-		}
+		for i := 0; i < len(args); i++ {
+			input, err := ioutil.ReadFile(args[i])
+			if err != nil {
+				os.Stderr.WriteString(fmt.Sprintf("mdcat: %s: unable to read from file\n", args[i]))
+				os.Exit(1)
+			}
 
-		output := blackfriday.Markdown(input, renderer, extensions)
-		os.Stdout.Write(output)
+			output := blackfriday.Markdown(input, renderer, extensions)
+			os.Stdout.Write(output)
+		}
 	} else {
 		reader := bufio.NewReader(os.Stdin)
 
