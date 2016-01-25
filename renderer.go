@@ -141,13 +141,9 @@ func (options *Console) TableCell(out *bytes.Buffer, text []byte, flags int) {
 	out.WriteString("TableCell\n")
 }
 
-func (options *Console) Footnotes(out *bytes.Buffer, text func() bool) {
-	out.WriteString("Footnotes\n")
-}
+func (options *Console) Footnotes(out *bytes.Buffer, text func() bool) {}
 
-func (options *Console) FootnoteItem(out *bytes.Buffer, name, text []byte, flags int) {
-	out.WriteString("FootnotesItem\n")
-}
+func (options *Console) FootnoteItem(out *bytes.Buffer, name, text []byte, flags int) {}
 
 func (options *Console) TitleBlock(out *bytes.Buffer, text []byte) {
 	out.WriteString("\n")
