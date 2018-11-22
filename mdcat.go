@@ -4,9 +4,12 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/russross/blackfriday"
 	"io/ioutil"
 	"os"
+
+	"github.com/russross/blackfriday"
+
+	"github.com/samfoo/mdcat/renderer"
 )
 
 func main() {
@@ -14,7 +17,7 @@ func main() {
 
 	args := flag.Args()
 
-	renderer := &Console{}
+	renderer := &renderer.Console{}
 	extensions := 0 |
 		blackfriday.EXTENSION_NO_INTRA_EMPHASIS |
 		blackfriday.EXTENSION_FENCED_CODE |
