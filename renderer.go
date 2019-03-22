@@ -3,18 +3,18 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/russross/blackfriday"
-	"github.com/samfoo/ansi"
 	"html"
 	"regexp"
 	"strings"
+
+	"github.com/russross/blackfriday"
+	"github.com/samfoo/ansi"
 )
 
 // Index corresponds to the heading level (e.g. h1, h2, h3...)
 var headerStyles = [...]string{
 	ansi.ColorCode("yellow+bhu"),
 	ansi.ColorCode("yellow+bh"),
-	ansi.ColorCode("yellow"),
 	ansi.ColorCode("yellow"),
 }
 
@@ -66,6 +66,9 @@ func (options *Console) BlockHtml(out *bytes.Buffer, text []byte) {
 
 func (options *Console) Header(out *bytes.Buffer, text func() bool, level int, id string) {
 	out.WriteString("\n")
+	if level < 1 || level > len(headerStyles) {
+		level = len(headerStyles)
+	}
 	out.WriteString(headerStyles[level-1])
 
 	marker := out.Len()
