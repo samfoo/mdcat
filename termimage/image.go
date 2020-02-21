@@ -13,7 +13,6 @@ import (
 
 	"github.com/mattn/go-isatty"
 	"github.com/mattn/go-sixel"
-	"github.com/nfnt/resize"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -71,7 +70,7 @@ func checkSixel() bool {
 	return false
 }
 
-func iTermEncode(out io.Writer, w, h uint, img image.Image) error {
+func iTermEncode(out io.Writer, img image.Image) error {
 	var buf bytes.Buffer
 	if err := png.Encode(&buf, img); err != nil {
 		return err
@@ -79,8 +78,8 @@ func iTermEncode(out io.Writer, w, h uint, img image.Image) error {
 
 	fmt.Fprint(out, "\033]1337;")
 	fmt.Fprintf(out, "File=inline=1")
-	fmt.Fprintf(out, ";width=%dpx", w)
-	fmt.Fprintf(out, ";height=%dpx", h)
+	fmt.Fprintf(out, ";width=%dpx", img.Bounds().Dx())
+	fmt.Fprintf(out, ";height=%dpx", img.Bounds().Dy())
 	fmt.Fprint(out, ":")
 	fmt.Fprintf(out, "%s", base64.StdEncoding.EncodeToString(buf.Bytes()))
 	fmt.Fprint(out, "\a\n")
@@ -92,11 +91,9 @@ func Render(out io.Writer, r io.Reader, w uint) error {
 	if err != nil {
 		return err
 	}
-	h := uint(float64(img.Bounds().Dy()) / float64(img.Bounds().Dx()) * float64(w))
-	img = resize.Resize(w, h, img, resize.Lanczos3)
 
 	if checkIterm() {
-		return iTermEncode(out, w, h, img)
+		return iTermEncode(out, img)
 	} else if checkSixel() {
 		return sixel.NewEncoder(out).Encode(img)
 	}
