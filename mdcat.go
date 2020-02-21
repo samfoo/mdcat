@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/russross/blackfriday"
 	"io/ioutil"
 	"os"
+
+	"github.com/mattn/go-colorable"
+	"github.com/russross/blackfriday"
 )
 
 func main() {
@@ -25,6 +27,7 @@ func main() {
 		blackfriday.EXTENSION_BACKSLASH_LINE_BREAK |
 		blackfriday.EXTENSION_DEFINITION_LISTS
 
+	stdout := colorable.NewColorableStdout()
 	if len(args) > 0 {
 		for i := 0; i < len(args); i++ {
 			input, err := ioutil.ReadFile(args[i])
@@ -34,7 +37,7 @@ func main() {
 			}
 
 			output := blackfriday.Markdown(input, renderer, extensions)
-			os.Stdout.Write(output)
+			stdout.Write(output)
 		}
 	} else {
 		reader := bufio.NewReader(os.Stdin)
@@ -58,7 +61,7 @@ func main() {
 		}
 
 		output := blackfriday.Markdown(input, renderer, extensions)
-		os.Stdout.Write(output)
+		stdout.Write(output)
 	}
 
 }
