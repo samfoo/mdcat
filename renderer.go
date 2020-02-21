@@ -3,11 +3,20 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/russross/blackfriday"
-	"github.com/samfoo/ansi"
 	"html"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
+	"io"
+	"net/http"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/russross/blackfriday"
+	"github.com/samfoo/ansi"
+	"github.com/samfoo/mdcat/termimage"
 )
 
 // Index corresponds to the heading level (e.g. h1, h2, h3...)
@@ -38,6 +47,8 @@ type list struct {
 
 type Console struct {
 	lists []*list
+	tty   bool
+	base  string
 }
 
 func (options *Console) BlockCode(out *bytes.Buffer, text []byte, lang string) {
@@ -167,6 +178,26 @@ func (options *Console) Emphasis(out *bytes.Buffer, text []byte) {
 }
 
 func (options *Console) Image(out *bytes.Buffer, link []byte, title []byte, alt []byte) {
+	if options.tty {
+		var r io.ReadCloser
+		if bytes.HasPrefix(link, []byte("http://")) || bytes.HasPrefix(link, []byte("https://")) {
+			resp, err := http.Get(string(link))
+			if err == nil {
+				r = resp.Body
+			}
+		} else {
+			f, err := os.Open(filepath.Join(options.base, string(link)))
+			if err == nil {
+				r = f
+			}
+		}
+		if r != nil {
+			defer r.Close()
+			if termimage.Render(out, r, 500) == nil {
+				return
+			}
+		}
+	}
 	out.WriteString(" [ image ] ")
 }
 
