@@ -92,7 +92,7 @@ func Render(out io.Writer, r io.Reader, w uint) error {
 	if err != nil {
 		return err
 	}
-	h := uint(float64(img.Bounds().Dx()) / float64(img.Bounds().Dy()) * float64(w))
+	h := uint(float64(img.Bounds().Dy()) / float64(img.Bounds().Dx()) * float64(w))
 	img = resize.Resize(w, h, img, resize.Lanczos3)
 
 	if checkIterm() {
