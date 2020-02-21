@@ -3,11 +3,18 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/russross/blackfriday"
-	"github.com/samfoo/ansi"
 	"html"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
+	"net/http"
 	"regexp"
 	"strings"
+
+	"github.com/mattn/go-sixel"
+	"github.com/russross/blackfriday"
+	"github.com/samfoo/ansi"
 )
 
 // Index corresponds to the heading level (e.g. h1, h2, h3...)
@@ -167,6 +174,18 @@ func (options *Console) Emphasis(out *bytes.Buffer, text []byte) {
 }
 
 func (options *Console) Image(out *bytes.Buffer, link []byte, title []byte, alt []byte) {
+	if bytes.HasPrefix(link, []byte("http://")) || bytes.HasPrefix(link, []byte("https://")) {
+		resp, err := http.Get(string(link))
+		if err == nil {
+			defer resp.Body.Close()
+			img, _, err := image.Decode(resp.Body)
+			if err == nil {
+				if sixel.NewEncoder(out).Encode(img) == nil {
+					return
+				}
+			}
+		}
+	}
 	out.WriteString(" [ image ] ")
 }
 
