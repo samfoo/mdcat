@@ -4,9 +4,12 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/russross/blackfriday"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+
+	"github.com/mattn/go-isatty"
+	"github.com/russross/blackfriday"
 )
 
 func main() {
@@ -14,7 +17,9 @@ func main() {
 
 	args := flag.Args()
 
-	renderer := &Console{}
+	renderer := &Console{
+		tty: isatty.IsTerminal(os.Stdout.Fd()),
+	}
 	extensions := 0 |
 		blackfriday.EXTENSION_NO_INTRA_EMPHASIS |
 		blackfriday.EXTENSION_FENCED_CODE |
@@ -33,6 +38,7 @@ func main() {
 				os.Exit(1)
 			}
 
+			renderer.base = filepath.Dir(args[i])
 			output := blackfriday.Markdown(input, renderer, extensions)
 			os.Stdout.Write(output)
 		}
